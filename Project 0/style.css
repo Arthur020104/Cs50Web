@@ -1,0 +1,203 @@
+b
+{
+    font-size: 23px;
+    font-weight:500;
+    color: #777;
+    font-weight:530;
+    font-family: Sans-serif;
+}
+.line
+{
+    border-bottom: 1px solid #ebebeb;
+    width: 100%;
+    margin-left: 0px;
+}
+body
+{
+    color: #000;
+    font-family:arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+    margin-top: 0rem;
+    
+}
+form > div
+{
+ font-size: 13px;
+ line-height:18px;
+}
+.input
+{
+    align-self: center;
+}
+div
+{
+    margin-left: 3rem;
+}
+.submit_adv
+{
+    border: 1px solid #3079ed!important;
+    -webkit-border-radius: 2px!important;
+    -moz-border-radius: 2px!important;
+    border-radius: 2px!important;
+
+    -webkit-box-shadow: none!important;
+    -moz-box-shadow: none!important;
+    box-shadow: none!important;
+
+    background-color: #4d90fe!important;
+    background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed)!important;
+    color: #fff!important;
+
+    font-size: 11px!important;
+    font-weight: bold!important;
+
+    text-align: center!important;
+    white-space: nowrap!important;
+    margin-right: 16px!important;
+    height: 27px!important;
+    line-height: 27px!important;
+    min-width: 54px!important;
+    outline: 0!important;
+    padding: 0 8px!important;
+    margin-left: 76%!important;
+}
+h2
+{
+    color: #d93025;
+    font-size: 20px;
+    margin: 25px 35px;
+    font-weight: 500;
+    margin-top: 2px;
+}
+table
+{
+    margin-top: 3rem;
+    margin-left: 2rem;
+    border-collapse: separate;
+    border-spacing: 15px;
+    
+}
+.logo
+{
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    margin-left: 1.5rem;
+    margin-right: 75vh;
+}
+@media(max-width:1599px)
+{
+    .logo
+    {
+        margin-right: 105vh;
+    }
+}
+@media (max-width:1600px)
+{
+    .logo
+    {
+        margin-right: 145vh;
+    }
+}
+@media (min-width:1900px)
+{
+    .logo
+    {
+        margin-right: 172vh;
+    }
+}
+@media (max-width:1200px)
+{
+    .logo
+    {
+        margin-right: 70vh;
+    }
+}
+@media (max-width:600px)
+{
+    .logo
+    {
+        margin-right: 40vh;
+    }
+}
+div
+{
+    margin-left: 0px;
+    margin: 0px;
+}
+input[type="text"]
+{
+    border: 1px solid #d9d9d9;
+    border-top: 1px solid #c0c0c0;
+    font-size: 13px;
+    height: 25px;
+    padding: 1px 8px;
+    width: 450px;
+}
+tr
+{
+    line-height: 13px;
+    color: #222;
+    font-size: 12px;
+}
+a
+{
+    color:rgba(0,0,0,0.87);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration:solid;
+    margin-left: 0.4rem;
+    
+}
+.endlink
+{
+    text-align: center;
+    line-height: 24px;
+}
+nav
+{
+    width: auto;
+    
+    padding-top:1rem ;
+    padding-bottom: 1rem;
+}
+.header
+{
+   margin-top: 0px;
+}
+.textinput
+{
+    border-radius: 10rem;
+    height: 38px!important;
+    width: 600px!important;
+    outline: none;
+}
+.textinput :hover
+{
+    -webkit-box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.38); 
+    box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.38);
+}
+.search
+{
+    margin-top: 4rem;
+    margin-left: 35%;
+    margin-right: 0;
+}
+input[type="submit"]
+{
+    background-color: #f8f9fa;
+    color: #3c4043;
+    padding: 0 16px;
+    border-radius: 0.3rem;
+    border: transparent;
+    text-align: center;
+    margin: 11px 4px;
+    height: 36px;
+    line-height: 27px;
+    
+}
+.submit_center
+{
+    margin-top: 1rem;
+    margin-left: 13%;
+}
