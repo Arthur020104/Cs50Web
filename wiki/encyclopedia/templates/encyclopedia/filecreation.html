@@ -1,0 +1,24 @@
+{%extends "encyclopedia/layout.html"%}
+
+{% block title %}
+Create New Page
+{% endblock %}
+{% block body %}
+<h3>New Page</h3>
+<form class="mb-5" action="{% url 'newpage' %}" autocomplete="off" method="post">
+    {% csrf_token %}
+    <input name="title" type="text" placeholder="Title" style="width: 50%;" class="form-control">
+    {% if filecontent %}
+    <textarea name="content" placeholder="Content" style="width: 50%;" class="form-control" rows="3">{{ filecontent }}</textarea>
+    {% else %}
+    <textarea name="content" placeholder="Content" style="width: 50%;" class="form-control" rows="3"></textarea>
+    {% endif %}
+    <input class="mt-1 btn btn-outline-secondary" type="Submit">
+</form>
+<h4 class="mt-5">Edit page</h4>
+<form action="{% url 'newpage' %}" autocomplete="off" method="post">
+    {% csrf_token %}
+    <input name="titleedit" type="text" placeholder="Title" style="width: 50%;" class="form-control">
+    <input class="mt-1 btn btn-outline-secondary" type="Submit">
+</form>
+{% endblock %}
