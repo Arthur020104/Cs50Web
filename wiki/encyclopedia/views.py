@@ -34,13 +34,18 @@ def newpage(request):
             if not type(util.get_entry(request.POST['titleedit'])) == str:
                 return render(request,"encyclopedia/error.html", {
             "text": "The page you are trying to edit doesn't exist."})
+
             return render(request,"encyclopedia/filecreation.html", {
             "filecontent": util.get_entry(request.POST['titleedit'])
             })
-        util.save_entry(request.POST.get('title', False), request.POST.get('content', False))
-        return render(request,"encyclopedia/pages.html", {
+
+        if request.POST.get('title', False):
+            util.save_entry(request.POST.get('title', False), request.POST.get('content', False))
+            return render(request,"encyclopedia/pages.html", {
                 "entries": markdown2.markdown(util.get_entry(request.POST.get('title', False)))
             })
+        else:
+            return render(request, "encyclopedia/filecreation.html")
     return render(request, "encyclopedia/filecreation.html")
     
 def random(request):
