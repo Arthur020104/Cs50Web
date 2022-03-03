@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    {% if activeProdu %}
+        {% for product in activeProdu %}
+        <hr>
+    <div class="container">
+        <div class="row">
+          <div class="col-md">
+            <img class="rounded img-fluid imagem" src={{product.img}}>
+          </div>
+          <div class="col-md">
+            <h5 class="mt-2"><a class="text-dark" href={% url 'product' product.id%}>{{product.name}}</a></h5>
+            <p class="mt-3">{{product.about}}</p>
+            <p class="mt-3">Category:{{product.category.name}}</p>
+            <p class="text-muted mt-3">Time created: {{product.time_created}}</p>
+          </div>
+        </div>
+      </div>
+      <hr>
+        {% endfor %}
+        </div>
+    {% else %}
+        <h3>No listing.</h3>
+    {% endif %}
+{% endblock %}
