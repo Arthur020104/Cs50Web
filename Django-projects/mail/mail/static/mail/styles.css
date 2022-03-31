@@ -1,0 +1,21 @@
+textarea {
+    min-height: 400px;
+}
+.container-email
+{
+    border: 2px solid #c5c5c5;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 16px;
+    margin-top: 10px;
+    padding: 3px 0 3px 0;
+    color: #676767;
+    background-color: #fff;
+    border-radius: 3px;
+}
+.container-email:hover
+{
+    background-color: #bbb;
+    color: #fff!important;
+    border: 2px solid #bbb;
+    cursor: pointer;
+}
