@@ -15,6 +15,7 @@ function compose_email() {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  deleted('mail-full');
 
   document.querySelector("input.btn.btn-primary").addEventListener('click',()=>{
     recipients = document.querySelector('#compose-recipients').value;
@@ -46,12 +47,13 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   let vitriniemail = document.querySelector('#emails-view');
   vitriniemail.style.display = 'block';
+  //deleted('main-full');
   document.querySelector('#compose-view').style.display = 'none';
   fetch('/emails/inbox')
   .then(response => response.json())
   .then(emails => {
     // Print emails
-    console.log(emails);
+    //console.log(emails);
 
     // ... do something else with emails ...
     for(mail in emails)
@@ -67,6 +69,7 @@ function load_mailbox(mailbox) {
       elemento.classList.add('col-4', "font-weight-bold");
       subject.classList.add('col-4');
       timest.classList.add('col-4', "font-weight-bold");
+      email.setAttribute('id', emails[mail].id);
 
       elemento.innerHTML = emails[mail].sender;
       subject.innerHTML = emails[mail].subject;
@@ -77,8 +80,58 @@ function load_mailbox(mailbox) {
       email.appendChild(timest);
       vitriniemail.appendChild(email);
       
+      email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
     }
   });
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+}
+function fullpage(id, emails)
+{
+  //Devido o ultimo id sempre estar no index 0 torna-se necessario
+  //pegar o length do array e o diminuir pelo id para assim 
+  //encontrar o index no array que tem o id correspondente
+  mail = emails[emails.length - id];
+
+  document.querySelector('#emails-view').style.display = 'none';
+
+  let elemento = document.createElement('div');
+  let row0 = document.createElement('div');
+  let row1 = document.createElement('div');
+  let row2 = document.createElement('div');
+  let row3 = document.createElement('div');
+  let replybtn = document.createElement('button');
+  let article = document.createElement('article');
+
+  elemento.classList.add('container', 'mail-full');
+  row0.classList.add("row");
+  row1.classList.add("row");
+  row2.classList.add("row");
+  row3.classList.add("row");
+  replybtn.classList.add("btn", 'btn-outline-primary', 'mail-full');
+
+  row0.innerHTML = '<p><b>From: </b>' + mail.sender + "</p>";
+  row1.innerHTML = '<p><b>To: </b>' + mail.recipients + "</p>";
+  row2.innerHTML = '<p><b>Subject: </b>' + mail.subject + "</p>";
+  row3.innerHTML = '<p><b>Timestamp: </b>' + mail.timestamp + "</p>";
+  replybtn.innerHTML = 'Reply';
+  article.innerHTML ="<hr>" + '<p>' + mail.body + '</p>';
+
+  elemento.appendChild(row0);
+  elemento.appendChild(row1);
+  elemento.appendChild(row2);
+  elemento.appendChild(row3);
+  elemento.appendChild(replybtn);
+  document.querySelector('#fullpage').appendChild(elemento);
+  elemento.appendChild(article);
+}
+
+function deleted(classe)
+{
+  elements = document.getElementsByClassName(classe);
+  for(let i = 0; i < elements.length; i++)
+  {
+    elements[i].remove();
+  }
+  return console.log("Deleted");
 }
