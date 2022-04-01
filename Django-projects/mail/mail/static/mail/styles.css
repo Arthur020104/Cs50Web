@@ -32,3 +32,11 @@ article
 {
     margin-left: 0;
 }
+.col-1
+{
+    padding-top: 6px;
+    margin-bottom: 10px;
+    transition: .3s ease all;
+    border-radius: 4px;
+    padding-left: 18px;
+}

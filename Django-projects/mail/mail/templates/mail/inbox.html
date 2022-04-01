@@ -3,7 +3,6 @@
 
 {% block body %}
     <h2>{{ request.user.email }}</h2>
-
     <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
     <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
     <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
@@ -36,4 +35,5 @@
 
 {% block script %}
     <script src="{% static 'mail/inbox.js' %}"></script>
+    <script src="https://kit.fontawesome.com/b8f11d1673.js" crossorigin="anonymous"></script>
 {% endblock %}

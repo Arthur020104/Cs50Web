@@ -1,3 +1,28 @@
+function deleted(classe)
+{
+  elements = document.getElementsByClassName(classe);
+  for(let i = 0; i < elements.length; i++)
+  {
+    elements[i].remove();
+  }
+  return console.log("Deleted");
+}
+
+function archieved(id)
+{
+  console.log('click');
+  fetch('/emails/'+id, {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: true
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+  // Print result
+  console.log(result);
+  });
+}
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
@@ -54,33 +79,80 @@ function load_mailbox(mailbox) {
   .then(emails => {
     // Print emails
     //console.log(emails);
-
-    // ... do something else with emails ...
-    for(mail in emails)
+    console.log(emails);
+    deleted('mail-full');
+    if(mailbox == "archive")
+    {
+      for(mail in emails)
+      {
+        if(emails[mail].archived == true)
+        {
+          let archieve = document.createElement('i')
+          let elemento = document.createElement('div');
+          let email = document.createElement('div');
+          let subject = document.createElement('div');
+          let timest = document.createElement('div');
+  
+  
+          email.classList.add('container-email', "row");
+          elemento.classList.add('col-4', "font-weight-bold");
+          subject.classList.add('col-4');
+          timest.classList.add('col-3', "font-weight-bold");
+          archieve.classList.add('fa-solid', "fa-box-archive", 'col-1');//
+          email.setAttribute('id', emails[mail].id);
+  
+          elemento.innerHTML = emails[mail].sender;
+          subject.innerHTML = emails[mail].subject;
+          timest.innerHTML = emails[mail].timestamp;
+  
+          email.appendChild(elemento);
+          email.appendChild(archieve);
+          email.appendChild(subject);
+          email.appendChild(timest);
+          vitriniemail.appendChild(email);
+          
+          email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
+        }
+      }
+      console.log(emails);
+    }
+    else if(mailbox == "sent")
     {
 
-      let elemento = document.createElement('div');
-      let email = document.createElement('div');
-      let subject = document.createElement('div');
-      let timest = document.createElement('div');
+    }
+    else
+    {
+          // ... do something else with emails ...
+      for(mail in emails)
+      {
+        let archieve = document.createElement('i')
+        let elemento = document.createElement('div');
+        let email = document.createElement('div');
+        let subject = document.createElement('div');
+        let timest = document.createElement('div');
 
 
-      email.classList.add('container-email', "row");
-      elemento.classList.add('col-4', "font-weight-bold");
-      subject.classList.add('col-4');
-      timest.classList.add('col-4', "font-weight-bold");
-      email.setAttribute('id', emails[mail].id);
+        email.classList.add('container-email', "row");
+        elemento.classList.add('col-4', "font-weight-bold");
+        subject.classList.add('col-4');
+        timest.classList.add('col-3', "font-weight-bold");
+        archieve.classList.add('fa-solid', "fa-box-archive", "ar-box");//
+        email.setAttribute('id', emails[mail].id);
 
-      elemento.innerHTML = emails[mail].sender;
-      subject.innerHTML = emails[mail].subject;
-      timest.innerHTML = emails[mail].timestamp;
+        elemento.innerHTML = emails[mail].sender;
+        subject.innerHTML = emails[mail].subject;
+        timest.innerHTML = emails[mail].timestamp;
 
-      email.appendChild(elemento);
-      email.appendChild(subject);
-      email.appendChild(timest);
-      vitriniemail.appendChild(email);
+        email.appendChild(elemento);
+        //email.appendChild(archieve);
+        email.appendChild(subject);
+        email.appendChild(timest);
+        vitriniemail.appendChild(email);
+        vitriniemail.appendChild(archieve);
       
-      email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
+        archieve.addEventListener('click', ()=>{ return archieved(email.id)});//
+        email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
+      }
     }
   });
   // Show the mailbox name
@@ -92,6 +164,8 @@ function fullpage(id, emails)
   //pegar o length do array e o diminuir pelo id para assim 
   //encontrar o index no array que tem o id correspondente
   mail = emails[emails.length - id];
+
+  console.log(emails)
 
   document.querySelector('#emails-view').style.display = 'none';
 
@@ -124,14 +198,4 @@ function fullpage(id, emails)
   elemento.appendChild(replybtn);
   document.querySelector('#fullpage').appendChild(elemento);
   elemento.appendChild(article);
-}
-
-function deleted(classe)
-{
-  elements = document.getElementsByClassName(classe);
-  for(let i = 0; i < elements.length; i++)
-  {
-    elements[i].remove();
-  }
-  return console.log("Deleted");
 }
