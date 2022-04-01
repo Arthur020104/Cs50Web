@@ -10,18 +10,46 @@ function deleted(classe)
 
 function archieved(id)
 {
-  console.log('click');
   fetch('/emails/'+id, {
     method: 'PUT',
     body: JSON.stringify({
         archived: true
     })
   })
-  .then(response => response.json())
-  .then(result => {
-  // Print result
-  console.log(result);
-  });
+  setTimeout(() => {document.location.reload(true)}, 1500);
+  let message = {message: "Email archieved id: "+ id+'.'};
+  console.log(message);
+  alert(message);
+}
+function making_email(emails, mail)
+{
+  let vitriniemail = document.querySelector('#emails-view');
+  let archieve = document.createElement('i')
+  let elemento = document.createElement('div');
+  let email = document.createElement('div');
+  let subject = document.createElement('div');
+  let timest = document.createElement('div');
+
+
+  email.classList.add('container-email', "row");
+  elemento.classList.add('col-4', "font-weight-bold");
+  subject.classList.add('col-4');
+  timest.classList.add('col-3', "font-weight-bold");
+  archieve.classList.add('fa-solid', "fa-box-archive", "ar-box", 'col-1');
+  email.setAttribute('id', emails[mail].id);
+
+  elemento.innerHTML = emails[mail].sender;
+  subject.innerHTML = emails[mail].subject;
+  timest.innerHTML = emails[mail].timestamp;
+
+  email.appendChild(elemento);
+  email.appendChild(subject);
+  email.appendChild(timest);
+  vitriniemail.appendChild(email);
+
+  email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
+
+  return [archieve, email];
 }
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -35,13 +63,18 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email(recipients) {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
   deleted('mail-full');
-
+  if(String(recipients) != '[object PointerEvent]')
+  {
+    document.querySelector('#compose-recipients').value = recipients;
+  }
+  recipients = document.querySelector('#compose-recipients').value;//nao sei pq mas repetir essa linha de codigo 
+  //parou com o bug de eviar o msm email varias vezes
   document.querySelector("input.btn.btn-primary").addEventListener('click',()=>{
     recipients = document.querySelector('#compose-recipients').value;
     subject = document.querySelector('#compose-subject').value;
@@ -58,13 +91,17 @@ function compose_email() {
     .then(result => {
     // Print result
     console.log(result);
+    alert(result);
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
     });
   });
 
-  // Clear out composition fields
+  /* Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  document.querySelector('#compose-body').value = '';*/
 }
 
 function load_mailbox(mailbox) {
@@ -72,86 +109,39 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   let vitriniemail = document.querySelector('#emails-view');
   vitriniemail.style.display = 'block';
-  //deleted('main-full');
   document.querySelector('#compose-view').style.display = 'none';
-  fetch('/emails/inbox')
+  //deleted('main-full');
+  fetch('/emails/'+mailbox)
   .then(response => response.json())
   .then(emails => {
     // Print emails
-    //console.log(emails);
-    console.log(emails);
     deleted('mail-full');
     if(mailbox == "archive")
     {
       for(mail in emails)
       {
-        if(emails[mail].archived == true)
-        {
-          let archieve = document.createElement('i')
-          let elemento = document.createElement('div');
-          let email = document.createElement('div');
-          let subject = document.createElement('div');
-          let timest = document.createElement('div');
-  
-  
-          email.classList.add('container-email', "row");
-          elemento.classList.add('col-4', "font-weight-bold");
-          subject.classList.add('col-4');
-          timest.classList.add('col-3', "font-weight-bold");
-          archieve.classList.add('fa-solid', "fa-box-archive", 'col-1');//
-          email.setAttribute('id', emails[mail].id);
-  
-          elemento.innerHTML = emails[mail].sender;
-          subject.innerHTML = emails[mail].subject;
-          timest.innerHTML = emails[mail].timestamp;
-  
-          email.appendChild(elemento);
-          email.appendChild(archieve);
-          email.appendChild(subject);
-          email.appendChild(timest);
-          vitriniemail.appendChild(email);
-          
-          email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
-        }
+        making_email(emails, mail);
       }
-      console.log(emails);
     }
     else if(mailbox == "sent")
     {
-
+      for(mail in emails)
+      {
+        arr = making_email(emails, mail);
+        if(emails[mail].archived == false)
+        {
+          vitriniemail.appendChild(arr[0]);
+          arr[0].addEventListener('click', ()=>{ return archieved(arr[1].id)});
+        }
+      }
     }
     else
     {
-          // ... do something else with emails ...
       for(mail in emails)
       {
-        let archieve = document.createElement('i')
-        let elemento = document.createElement('div');
-        let email = document.createElement('div');
-        let subject = document.createElement('div');
-        let timest = document.createElement('div');
-
-
-        email.classList.add('container-email', "row");
-        elemento.classList.add('col-4', "font-weight-bold");
-        subject.classList.add('col-4');
-        timest.classList.add('col-3', "font-weight-bold");
-        archieve.classList.add('fa-solid', "fa-box-archive", "ar-box");//
-        email.setAttribute('id', emails[mail].id);
-
-        elemento.innerHTML = emails[mail].sender;
-        subject.innerHTML = emails[mail].subject;
-        timest.innerHTML = emails[mail].timestamp;
-
-        email.appendChild(elemento);
-        //email.appendChild(archieve);
-        email.appendChild(subject);
-        email.appendChild(timest);
-        vitriniemail.appendChild(email);
-        vitriniemail.appendChild(archieve);
-      
-        archieve.addEventListener('click', ()=>{ return archieved(email.id)});//
-        email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
+        arr = making_email(emails, mail);
+        vitriniemail.appendChild(arr[0]);
+        arr[0].addEventListener('click', ()=>{ return archieved(arr[1].id)});
       }
     }
   });
@@ -160,42 +150,67 @@ function load_mailbox(mailbox) {
 }
 function fullpage(id, emails)
 {
-  //Devido o ultimo id sempre estar no index 0 torna-se necessario
-  //pegar o length do array e o diminuir pelo id para assim 
-  //encontrar o index no array que tem o id correspondente
-  mail = emails[emails.length - id];
+  for(i in emails)
+  {
+    if(emails[i].id == id)
+    {
 
-  console.log(emails)
+      mail = emails[i];
 
-  document.querySelector('#emails-view').style.display = 'none';
 
-  let elemento = document.createElement('div');
-  let row0 = document.createElement('div');
-  let row1 = document.createElement('div');
-  let row2 = document.createElement('div');
-  let row3 = document.createElement('div');
-  let replybtn = document.createElement('button');
-  let article = document.createElement('article');
+      document.querySelector('#emails-view').style.display = 'none';
 
-  elemento.classList.add('container', 'mail-full');
-  row0.classList.add("row");
-  row1.classList.add("row");
-  row2.classList.add("row");
-  row3.classList.add("row");
-  replybtn.classList.add("btn", 'btn-outline-primary', 'mail-full');
+      let elemento = document.createElement('div');
+      let row0 = document.createElement('div');
+      let row1 = document.createElement('div');
+      let row2 = document.createElement('div');
+      let row3 = document.createElement('div');
+      let replybtn = document.createElement('button');
+      let article = document.createElement('article');
 
-  row0.innerHTML = '<p><b>From: </b>' + mail.sender + "</p>";
-  row1.innerHTML = '<p><b>To: </b>' + mail.recipients + "</p>";
-  row2.innerHTML = '<p><b>Subject: </b>' + mail.subject + "</p>";
-  row3.innerHTML = '<p><b>Timestamp: </b>' + mail.timestamp + "</p>";
-  replybtn.innerHTML = 'Reply';
-  article.innerHTML ="<hr>" + '<p>' + mail.body + '</p>';
+      elemento.classList.add('container', 'mail-full');
+      row0.classList.add("row");
+      row1.classList.add("row");
+      row2.classList.add("row");
+      row3.classList.add("row");
+      replybtn.classList.add("btn", 'btn-outline-primary', 'mail-full');
 
-  elemento.appendChild(row0);
-  elemento.appendChild(row1);
-  elemento.appendChild(row2);
-  elemento.appendChild(row3);
-  elemento.appendChild(replybtn);
-  document.querySelector('#fullpage').appendChild(elemento);
-  elemento.appendChild(article);
+      row0.innerHTML = '<p><b>From: </b>' + mail.sender + "</p>";
+      row1.innerHTML = '<p><b>To: </b>' + mail.recipients + "</p>";
+      row2.innerHTML = '<p><b>Subject: </b>' + mail.subject + "</p>";
+      row3.innerHTML = '<p><b>Timestamp: </b>' + mail.timestamp + "</p>";
+      replybtn.innerHTML = 'Reply';
+      article.innerHTML ="<hr>" + '<p>' + mail.body + '</p>';
+
+      elemento.appendChild(row0);
+      elemento.appendChild(row1);
+      elemento.appendChild(row2);
+      elemento.appendChild(row3);
+      elemento.appendChild(replybtn);
+      document.querySelector('#fullpage').appendChild(elemento);
+      elemento.appendChild(article);
+
+      replybtn.addEventListener('click', ()=>{ return compose_email(mail.sender)});
+    }
+  }
+}
+function alert(message)
+{
+  let alerts = document.createElement("div");
+  alerts.style.transition = '.6s ease all';
+  if("error" in message)
+  {
+    alerts.classList.add('alert-danger', "alert");
+    alerts.innerHTML = message['error'];
+  }
+  else
+  {
+    alerts.classList.add('alert-success', "alert");
+    alerts.innerHTML = message['message'];
+  }
+
+
+  document.querySelector('#alert').appendChild(alerts);
+
+  setTimeout(() => {alerts.style.display = "none"}, 3000);
 }

@@ -40,3 +40,7 @@ article
     border-radius: 4px;
     padding-left: 18px;
 }
+.col-1:hover
+{
+    cursor: pointer;
+}
