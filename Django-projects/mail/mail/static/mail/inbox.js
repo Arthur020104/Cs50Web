@@ -5,21 +5,31 @@ function deleted(classe)
   {
     elements[i].remove();
   }
-  return console.log("Deleted");
+  return console.log("Done");
 }
 
-function archieved(id)
+function archieved(id,condicao)
 {
   fetch('/emails/'+id, {
     method: 'PUT',
     body: JSON.stringify({
-        archived: true
+        archived: condicao
     })
   })
-  let message = {message: "Email archieved id: "+ id+'.'};
-  console.log(message);
-  alert(message);
-  setTimeout(() => {load_mailbox('archive')}, 1200);
+  if(condicao)
+  {
+    let message = {message: "Archieved email id: "+ id+'.'};
+    console.log(message);
+    alert(message);
+    setTimeout(() => {load_mailbox('archive')}, 1200);
+  }
+  else
+  {
+    let message = {warning: "Unarchived email id: "+ id+'.'};
+    console.log(message);
+    alert(message);
+    setTimeout(() => {load_mailbox('inbox')}, 1200);
+  }
 }
 function making_email(emails, mail)
 {
@@ -46,8 +56,6 @@ function making_email(emails, mail)
   vitriniemail.appendChild(email);
 
   email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
-
-  return email;
 }
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -96,10 +104,6 @@ function compose_email(recipients) {
     });
   });
 
-  /* Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';*/
 }
 
 function load_mailbox(mailbox) {
@@ -125,16 +129,14 @@ function load_mailbox(mailbox) {
     {
       for(mail in emails)
       {
-        retorno = making_email(emails, mail);
-        console.log(retorno);
+        making_email(emails, mail);
       }
     }
     else
     {
       for(mail in emails)
       {
-        retorno = making_email(emails, mail);
-        console.log(retorno);
+        making_email(emails, mail);
       }
     }
   });
@@ -193,7 +195,14 @@ function fullpage(id, emails)
         let archieve = document.createElement('i');
         archieve.classList.add('fa-solid', "fa-box-archive",'mybtn');
         row4.appendChild(archieve);
-        archieve.addEventListener('click', ()=>{ return archieved(mail.id)});
+        archieve.addEventListener('click', ()=>{ return archieved(mail.id, true)});
+      }
+      else
+      {
+        let archieve = document.createElement('i');
+        archieve.classList.add('fa-solid', "fa-box-open",'mybtn');
+        row4.appendChild(archieve);
+        archieve.addEventListener('click', ()=>{ return archieved(mail.id, false)});
       }
     }
   }
@@ -206,6 +215,11 @@ function alert(message)
   {
     alerts.classList.add('alert-danger', "alert");
     alerts.innerHTML = message['error'];
+  }
+  else if("warning" in message)
+  {
+    alerts.classList.add('alert-warning', "alert");
+    alerts.innerHTML = message['warning'];
   }
   else
   {
