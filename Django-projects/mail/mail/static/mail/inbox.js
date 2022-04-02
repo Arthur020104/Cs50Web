@@ -16,15 +16,14 @@ function archieved(id)
         archived: true
     })
   })
-  setTimeout(() => {document.location.reload(true)}, 1500);
   let message = {message: "Email archieved id: "+ id+'.'};
   console.log(message);
   alert(message);
+  setTimeout(() => {load_mailbox('archive')}, 1200);
 }
 function making_email(emails, mail)
 {
   let vitriniemail = document.querySelector('#emails-view');
-  let archieve = document.createElement('i')
   let elemento = document.createElement('div');
   let email = document.createElement('div');
   let subject = document.createElement('div');
@@ -35,7 +34,6 @@ function making_email(emails, mail)
   elemento.classList.add('col-4', "font-weight-bold");
   subject.classList.add('col-4');
   timest.classList.add('col-3', "font-weight-bold");
-  archieve.classList.add('fa-solid', "fa-box-archive", "ar-box", 'col-1');
   email.setAttribute('id', emails[mail].id);
 
   elemento.innerHTML = emails[mail].sender;
@@ -49,7 +47,7 @@ function making_email(emails, mail)
 
   email.addEventListener('click', ()=>{ return fullpage(email.id, emails)});
 
-  return [archieve, email];
+  return email;
 }
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -127,21 +125,16 @@ function load_mailbox(mailbox) {
     {
       for(mail in emails)
       {
-        arr = making_email(emails, mail);
-        if(emails[mail].archived == false)
-        {
-          vitriniemail.appendChild(arr[0]);
-          arr[0].addEventListener('click', ()=>{ return archieved(arr[1].id)});
-        }
+        retorno = making_email(emails, mail);
+        console.log(retorno);
       }
     }
     else
     {
       for(mail in emails)
       {
-        arr = making_email(emails, mail);
-        vitriniemail.appendChild(arr[0]);
-        arr[0].addEventListener('click', ()=>{ return archieved(arr[1].id)});
+        retorno = making_email(emails, mail);
+        console.log(retorno);
       }
     }
   });
@@ -165,6 +158,7 @@ function fullpage(id, emails)
       let row1 = document.createElement('div');
       let row2 = document.createElement('div');
       let row3 = document.createElement('div');
+      let row4 = document.createElement('div');
       let replybtn = document.createElement('button');
       let article = document.createElement('article');
 
@@ -173,7 +167,8 @@ function fullpage(id, emails)
       row1.classList.add("row");
       row2.classList.add("row");
       row3.classList.add("row");
-      replybtn.classList.add("btn", 'btn-outline-primary', 'mail-full');
+      row4.classList.add("row");
+      replybtn.classList.add('btn', "btn-outline-secondary", 'mail-full', "mybtn");
 
       row0.innerHTML = '<p><b>From: </b>' + mail.sender + "</p>";
       row1.innerHTML = '<p><b>To: </b>' + mail.recipients + "</p>";
@@ -186,18 +181,27 @@ function fullpage(id, emails)
       elemento.appendChild(row1);
       elemento.appendChild(row2);
       elemento.appendChild(row3);
-      elemento.appendChild(replybtn);
+      elemento.appendChild(row4);
+      row4.appendChild(replybtn);
       document.querySelector('#fullpage').appendChild(elemento);
       elemento.appendChild(article);
 
       replybtn.addEventListener('click', ()=>{ return compose_email(mail.sender)});
+
+      if(mail.archived == false)
+      {
+        let archieve = document.createElement('i');
+        archieve.classList.add('fa-solid', "fa-box-archive",'mybtn');
+        row4.appendChild(archieve);
+        archieve.addEventListener('click', ()=>{ return archieved(mail.id)});
+      }
     }
   }
 }
 function alert(message)
 {
   let alerts = document.createElement("div");
-  alerts.style.transition = '.6s ease all';
+  alerts.style.transition = '1.2s ease all';
   if("error" in message)
   {
     alerts.classList.add('alert-danger', "alert");
@@ -212,5 +216,5 @@ function alert(message)
 
   document.querySelector('#alert').appendChild(alerts);
 
-  setTimeout(() => {alerts.style.display = "none"}, 3000);
+  setTimeout(() => {alerts.style.display = "none"}, 1100);
 }
