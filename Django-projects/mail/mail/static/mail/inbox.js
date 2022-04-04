@@ -21,14 +21,14 @@ function archieved(id,condicao)
     let message = {message: "Archieved email id: "+ id+'.'};
     console.log(message);
     alert(message);
-    setTimeout(() => {load_mailbox('archive')}, 1200);
+    setTimeout(() => {load_mailbox('archive')}, 1600);
   }
   else
   {
     let message = {warning: "Unarchived email id: "+ id+'.'};
     console.log(message);
     alert(message);
-    setTimeout(() => {load_mailbox('inbox')}, 1200);
+    setTimeout(() => {load_mailbox('inbox')}, 1600);
   }
 }
 function making_email(emails, mail)
@@ -101,7 +101,10 @@ function compose_email(recipients) {
     document.querySelector('#compose-recipients').value = '';
     document.querySelector('#compose-subject').value = '';
     document.querySelector('#compose-body').value = '';
-    setTimeout(() => {load_mailbox('sent')}, 1200);
+    if(!"error" in result)
+    {
+      setTimeout(() => {load_mailbox('sent')}, 1600);
+    }
     });
   });
 
@@ -214,5 +217,8 @@ function alert(message)
 
   document.querySelector('#alert').appendChild(alerts);
 
-  setTimeout(() => {alerts.style.display = "none"}, 1100);
+  alerts.style.animationPlayState = 'running';
+  alerts.addEventListener('animationend', () =>  {
+    alerts.remove();
+  });
 }
