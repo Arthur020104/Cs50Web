@@ -101,6 +101,7 @@ function compose_email(recipients) {
     document.querySelector('#compose-recipients').value = '';
     document.querySelector('#compose-subject').value = '';
     document.querySelector('#compose-body').value = '';
+    setTimeout(() => {load_mailbox('sent')}, 1200);
     });
   });
 
@@ -118,26 +119,9 @@ function load_mailbox(mailbox) {
   .then(emails => {
     // Print emails
     deleted('mail-full');
-    if(mailbox == "archive")
+    for(mail in emails)
     {
-      for(mail in emails)
-      {
-        making_email(emails, mail);
-      }
-    }
-    else if(mailbox == "sent")
-    {
-      for(mail in emails)
-      {
-        making_email(emails, mail);
-      }
-    }
-    else
-    {
-      for(mail in emails)
-      {
-        making_email(emails, mail);
-      }
+      making_email(emails, mail);
     }
   });
   // Show the mailbox name
