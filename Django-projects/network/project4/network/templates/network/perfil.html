@@ -1,0 +1,36 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block title %}{{user_profile.username}}{% endblock %}
+{% block body %}
+    <h3>{{user_profile.username}}</h3>
+    <p>{{user_profile.email}}</p>
+    <p>Followers:{{followers.count}}</p>
+    {% if request.user in followers %}
+        <button id="follow" data-user="{{user_profile.id}}" type="submit" class="btn btn-outline-danger">Unfollow</button>
+    {% elif request.user == user_profile %}
+
+    {% else %}
+        <button id="follow" data-user="{{user_profile.id}}" type="submit" class="btn btn-outline-secondary">Follow</button>
+    {% endif %}
+{% if posts%}
+    {% for post in posts %}
+    <div class="row">
+        <div class="container">
+            <div class="posts">
+                <p>{{post.sender.username}}</p>
+                <p>{{post.post}}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% if posts.has_previous %}
+        <a href="?page=1">&laquo First</a>
+        <a href="?page={{posts.previous_page_number}}">Previous</a>
+    {% endif %}
+    Page {{venues.number}} of {{venues.paginator.num_pages}}
+    {% if posts.has_next %}
+    <a href="?page={{posts.next_page_number}}">Next</a>
+    <a href="?page={{venues.paginator.num_pages}}">Last &raquo</a>
+    {% endif %}
+{% endif %}
+{% endblock %}
