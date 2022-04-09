@@ -5,7 +5,7 @@
     <div class="container form-post">
         <form method="post" action="{% url 'posting' %}">
             {% csrf_token %}
-            <textarea cols="100" rows="5" name="post" placeholder="O que está acontecendo?" class="post-text" type="text" autocomplete="off"></textarea>
+            <textarea cols="70" rows="5" name="post" placeholder="O que está acontecendo?" class="post-text" type="text" autocomplete="off"></textarea>
             <div class="d-flex flex-row-reverse">
                 <div class="p-2">
                     <input class="btn btn-outline-secondary" type="submit">
@@ -20,11 +20,13 @@
         <div class="container">
             <div class="posts">
                 <a href="/Profile/{{post.sender.username}}"><p>{{post.sender.username}}</p></a>
+                <div class=>{{post.timestamp}}</div>
                 <p>{{post.post}}</p>
                 {% if request.user in post.likes.all %}
-                    <div class="icon"><i id="{{post.id}}" data-post_id="{{post.id}}" class="fa-solid fa-heart like"></i></div>
+                    <div><button class="icon"><i id="{{post.id}}" data-post_id="{{post.id}}" class="fa-solid fa-heart like"></i></button><b>{{post.likes.all.count}}</b></div>
+                {% elif  request.user == post.sender%}
                 {% else %}
-                    <div class="icon"><i id="{{post.id}}" data-post_id="{{post.id}}" class="fa-regular fa-heart like"></i></div>
+                    <div><button class="icon"><i id="{{post.id}}" data-post_id="{{post.id}}" class="fa-regular fa-heart like"></i></button><b>{{post.likes.all.count}}</b></div>
                 {% endif %}
             </div>
         </div>

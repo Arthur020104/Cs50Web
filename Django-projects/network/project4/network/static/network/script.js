@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
                         liked.classList.toggle("fa-solid");
                         liked.classList.toggle("fa-regular");
                         liked.style.animationName = 'show';
+                        liked.style.animationDuration = '1s';
                         liked.style.animationPlayState = 'running';
+                        setTimeout(() => {location.reload(true)}, 500);
                     });
                 });
             });

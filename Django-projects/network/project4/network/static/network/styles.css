@@ -94,15 +94,16 @@
 .fa-heart
 {
     animation-name: show;
-    animation-duration: 0.5s;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
-    animation-play-state: paused;
+    animation-play-state: running;
 }
 @keyframes show
 {
     0%
     {
         opacity: 0;
+
     }
 
     100%
@@ -122,4 +123,31 @@
     {
         opacity: 0;
     }
+}
+
+.icon
+{
+    animation-name: show;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+    outline: none!important;
+    background-color: #f8f9fa;
+    border: none;
+    color: rgb(168, 164, 161);
+    border-color: rgb(168, 164, 161);
+    border: 1px solid;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.icon:hover
+{
+    background-color: rgb(168, 164, 161);
+    color: #f8f9fa;
+}
+b
+{
+    color:rgb(108, 104, 101)!important;
+    margin-left: 10px!important;
 }

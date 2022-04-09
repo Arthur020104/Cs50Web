@@ -6,13 +6,16 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from sqlite3 import Timestamp
+from datetime import datetime
 
 from .models import User,UserPerfil, Posts
 
 def index(request):
     post = Posts.objects.all().order_by("timestamp").reverse()
+    for p1 in post:
+        p1.timestamp = datetime.fromtimestamp(float(p1.timestamp))
     p = Paginator(post,10)
     page = request.GET.get('page')
     posts = p.get_page(page)
@@ -82,6 +85,8 @@ def perfil(request, profile):
     user_profile = User.objects.get(username=profile)
     followers = UserPerfil.objects.get(pk=user_profile)
     post = Posts.objects.filter(sender=user_profile.id).order_by("timestamp").reverse()
+    for p1 in post:
+        p1.timestamp = datetime.fromtimestamp(float(p1.timestamp))
     p = Paginator(post,10)
     page = request.GET.get('page')
     posts = p.get_page(page)
@@ -118,7 +123,7 @@ def posting(request):
         if not request.POST["post"]:
             return render(request,"network/error.html",{"message":"Must type at least one word"})
         post = request.POST["post"]
-        now = datetime.now()
+        now = datetime.timestamp(datetime.now())
         user = request.user
         p = Posts.objects.create(post=post,timestamp=now,sender=user)
         p.save()
@@ -134,6 +139,8 @@ def following_page(request):
         ids.append(follow.user.id)
     
     post = Posts.objects.filter(sender__in=ids).order_by("timestamp").reverse()
+    for p1 in post:
+        p1.timestamp = datetime.fromtimestamp(float(p1.timestamp))
     p = Paginator(post,10)
     page = request.GET.get('page')
     posts = p.get_page(page)
