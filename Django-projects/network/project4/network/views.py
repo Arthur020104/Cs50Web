@@ -1,4 +1,4 @@
-from sqlite3 import Timestamp
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -7,12 +7,12 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 from .models import User,UserPerfil, Posts
 
-
 def index(request):
-    post = Posts.objects.all().order_by("timestamp")
+    post = Posts.objects.all().order_by("timestamp").reverse()
     p = Paginator(post,10)
     page = request.GET.get('page')
     posts = p.get_page(page)
@@ -54,7 +54,7 @@ def register(request):
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
-        if not username and not email and not password and not confirmation:
+        if not username or not email or not password or not confirmation:
             return render(request, "network/register.html", {
                 "message": "All fields need to be filled."
             })
@@ -81,7 +81,7 @@ def register(request):
 def perfil(request, profile):
     user_profile = User.objects.get(username=profile)
     followers = UserPerfil.objects.get(pk=user_profile)
-    post = Posts.objects.filter(sender=user_profile.id).order_by("timestamp")
+    post = Posts.objects.filter(sender=user_profile.id).order_by("timestamp").reverse()
     p = Paginator(post,10)
     page = request.GET.get('page')
     posts = p.get_page(page)
@@ -93,7 +93,8 @@ def perfil(request, profile):
 
 @csrf_exempt
 def follow(request, user_id):
-
+    if request.user.id is None:
+        return HttpResponse(401)
     user = User.objects.get(pk=user_id)
     profile = UserPerfil.objects.get(pk=user)
     print(profile.user)
@@ -111,6 +112,8 @@ def follow(request, user_id):
     return HttpResponse(401)
 
 def posting(request):
+    if request.user.id is None:
+        return HttpResponseRedirect(reverse('login'))
     if request.method == "POST":
         if not request.POST["post"]:
             return render(request,"network/error.html",{"message":"Must type at least one word"})
@@ -122,6 +125,33 @@ def posting(request):
         return HttpResponseRedirect(reverse('index'))
     return HttpResponse(401)
 
-
+@login_required(redirect_field_name='login',login_url="login")
 def following_page(request):
-    pass
+    user = request.user
+    following = user.following.all()
+    ids = []
+    for follow in following:
+        ids.append(follow.user.id)
+    
+    post = Posts.objects.filter(sender__in=ids).order_by("timestamp").reverse()
+    p = Paginator(post,10)
+    page = request.GET.get('page')
+    posts = p.get_page(page)
+    return render(request,"network/following.html",{
+        "posts" :posts
+        })
+
+@csrf_exempt
+def likes(request,post_id):
+    if request.user.id is None:
+        return HttpResponse(401)
+    user = request.user
+    post = Posts.objects.get(pk=post_id)
+    if request.method == "POST":
+        if user in post.likes.all():
+            post.likes.remove(user)
+            return JsonResponse({'post_id': post_id})
+        else:
+            post.likes.add(user)
+            return JsonResponse({'post_id': post_id})
+    return HttpResponse(401)

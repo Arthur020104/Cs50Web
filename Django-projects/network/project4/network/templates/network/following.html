@@ -1,21 +1,10 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-<div class="row">
-    <div class="container form-post">
-        <form method="post" action="{% url 'posting' %}">
-            {% csrf_token %}
-            <textarea cols="100" rows="5" name="post" placeholder="O que está acontecendo?" class="post-text" type="text" autocomplete="off"></textarea>
-            <div class="d-flex flex-row-reverse">
-                <div class="p-2">
-                    <input class="btn btn-outline-secondary" type="submit">
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+<h1>{{sender}}</h1>
     {% if posts%}
-    {% for post in posts %}
+    <div class="border-top">
+        {% for post in posts %}
     <div class="row">
         <div class="container">
             <div class="posts">
@@ -30,6 +19,7 @@
         </div>
     </div>
     {% endfor %}
+    </div>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             {% if posts.has_previous %}
@@ -48,5 +38,8 @@
         </ul>
     </nav>
     <div>
+    {% else %}
+        <h2 class="text-center">People you follow haven't posted yet.</h2>
     {% endif %}
+    
 {% endblock %}

@@ -2,12 +2,19 @@
 {
     border: 2px solid!important;
     border-color: rgb(208, 204, 201)!important;
-    border-radius: 3px;
+    border-radius: 1px;
     background-color: #f8f9fa;
-    padding: 2px 4px 2px 4px;
+    padding: 2px 8px 2px 8px!important;
     margin-top: 30px;
     width: 80%!important;
     margin: auto;
+    border-top: none!important;
+}
+.border-top
+{
+    border-top: 2px solid!important;
+    margin: 0 15% 0 15%;
+    border-color: rgb(208, 204, 201)!important;
 }
 .post-text
 {
@@ -26,11 +33,10 @@
     width: 50%!important;
     margin: auto;
     margin-bottom: 0px;
+    border-bottom: 2px solid!important;
+    border-color: rgb(208, 204, 201)!important;
 }
-.paginator
-{
-    margin-top: 30%;
-}
+
 @media (max-width:1390px)
 {
     .posts
@@ -78,5 +84,42 @@
     {
         width: 67%!important;
 
+    }
+}
+
+.fa-heart:hover
+{
+    cursor: pointer;
+}
+.fa-heart
+{
+    animation-name: show;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}
+@keyframes show
+{
+    0%
+    {
+        opacity: 0;
+    }
+
+    100%
+    {
+        opacity: 1;
+    }
+
+}
+
+@keyframes hide
+{
+    0%
+    {
+        opacity: 1;
+    }
+    100%
+    {
+        opacity: 0;
     }
 }

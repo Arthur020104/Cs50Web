@@ -137,7 +137,7 @@ function fullpage(id, emails)
     if(emails[i].id == id)
     {
 
-      mail = emails[i];
+      let mail = emails[i];
 
 
       document.querySelector('#emails-view').style.display = 'none';
