@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from sqlite3 import Timestamp
 from datetime import datetime
+import json
 
 from .models import User,UserPerfil, Posts
 
@@ -157,8 +158,20 @@ def likes(request,post_id):
     if request.method == "POST":
         if user in post.likes.all():
             post.likes.remove(user)
-            return JsonResponse({'post_id': post_id})
+            return JsonResponse({'post_id': post_id}, status=202)
         else:
             post.likes.add(user)
-            return JsonResponse({'post_id': post_id})
+            return JsonResponse({'post_id': post_id}, status=202)
     return HttpResponse(401)
+
+
+@csrf_exempt
+def post_edit(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        postid = int(data.get("postid"))
+        post = data.get("post")
+        p = Posts.objects.get(pk=postid)
+        p.post = post
+        p.save()
+        return JsonResponse({"message": "Post edited successfully."}, status=202)

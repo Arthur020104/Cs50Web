@@ -8,15 +8,15 @@
     <div class="row">
         <div class="container">
             <div class="posts">
-                <a href="/Profile/{{post.sender.username}}"><p>{{post.sender.username}}</p></a>
+                <h5><a href="/Profile/{{post.sender.username}}"><p>{{post.sender.username}}</p></a></h5>
                 <div class=>{{post.timestamp}}</div>
-                <p>{{post.post}}</p>
+                <p id="{{post.id}}">{{post.post}}</p>
                 {% if request.user in post.likes.all %}
-                    <div><button class="icon"><i id="{{post.id}}" data-post_id="{{post.id}}" class="fa-solid fa-heart like"></i></button><b>{{post.likes.all.count}}</b></div>
+                    <div><button class="icon"><i id="like{{post.id}}" data-post_id="{{post.id}}" class="fa-solid fa-heart like"></i></button><b>{{post.likes.all.count}}</b></div>
                 {% elif  request.user == post.sender%}
-
+                    <div><button data-id_change="{{post.id}}" class="change"><i class="fa-solid fa-pen"></button></i></div>
                 {% else %}
-                    <div><button class="icon"><i id="{{post.id}}" data-post_id="{{post.id}}" class="fa-regular fa-heart like"></i></button><b>{{post.likes.all.count}}</b></div>
+                    <div><button class="icon"><i id="like{{post.id}}" data-post_id="{{post.id}}" class="fa-regular fa-heart like"></i></button><b>{{post.likes.all.count}}</b></div>
                 {% endif %}
             </div>
         </div>

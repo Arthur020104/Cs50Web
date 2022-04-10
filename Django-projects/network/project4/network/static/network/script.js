@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
                 .then(response=> {
                     like.addEventListener('animationend', function animation() {
                         like.removeEventListener('animationend', animation);
-                        let liked = document.getElementById(response.post_id);
+                        let liked = document.getElementById('like'+response.post_id);
                         liked.classList.toggle("fa-solid");
                         liked.classList.toggle("fa-regular");
                         liked.style.animationName = 'show';
@@ -35,6 +35,39 @@ document.addEventListener('DOMContentLoaded', ()=> {
             });
         })
 
-        
+        document.querySelectorAll(".change").forEach(element=>{
+            element.addEventListener('click', ()=>{
+                let btn = document.createElement('button');
+                let p = document.getElementById(element.dataset.id_change);
+                let text = p.innerText;
+                let textarea = document.createElement("textarea");
+                element.style.display = "none";
+                textarea.classList.add("text_area");
+                p.append(textarea);
+                p.parentNode.appendChild(textarea);
+                p.parentNode.appendChild(btn);
+                textarea.value = text;
+                btn.innerHTML = "Edit";
+                btn.classList.add("btn", 'btn-outline-secondary');
+          
+                p.innerHTML = "";
+                textarea.focus();
+                p.parentNode.removeChild(p);
+                btn.addEventListener('click', ()=>{
+                    fetch('/editpost', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          postid: element.dataset.id_change,
+                          post: textarea.value,
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                    // Print result
+                    console.log(result);});
+                    setTimeout(() => {location.reload(true)}, 100);
+                });
+            });
+        });
     }
 });

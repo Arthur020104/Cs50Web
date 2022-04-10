@@ -33,8 +33,7 @@
     width: 50%!important;
     margin: auto;
     margin-bottom: 0px;
-    border-bottom: 2px solid!important;
-    border-color: rgb(208, 204, 201)!important;
+    border: none!important;
 }
 
 @media (max-width:1390px)
@@ -150,4 +149,35 @@ b
 {
     color:rgb(108, 104, 101)!important;
     margin-left: 10px!important;
+}
+.text_area
+{
+    margin-top: 10px;
+    display: flex!important;
+    height: 5rem!important;
+    width: 80%!important;
+    outline: none;
+    background-color: #f8f9fa;
+    margin-left: 40px;
+    border-color: rgb(168, 164, 161)!important;
+    border-radius: 1px;
+}
+.change
+{
+    border-radius: 2px;
+    border: none!important;
+    outline: none!important;
+    background-color: #f8f9fa;
+    border: none;
+    color:rgb(118, 114, 111);
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.btn
+{
+    
+    margin-top: 10px;
+}
+a
+{
+    text-decoration: none!important;
 }
