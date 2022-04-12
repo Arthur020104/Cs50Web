@@ -14,8 +14,8 @@
         <title>{% block title %}Decidir{% endblock %}</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a style="color:#4dba4d; font-weight: 800;"class="navbar-brand" href="#">Navbar</a>
+        <nav class="navbar navbar-expand-lg navbar-light bg_ligth">
+            <a style="color:#4d4Dba; font-weight: 800;"class="navbar-brand" href="#">Navbar</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -23,6 +23,9 @@
               <div class="navbar-nav">
                 <a class="nav-item nav-link active" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
                 <a class="nav-item nav-link" href="#comidas">Comidas</a>
+                {% if user.id == 1 and user.username == "Admin" %}
+                  <a class="nav-item nav-link" href="{% url 'recipe' %}">Criar receita</a>
+                {% endif %}
                 {% if user.is_authenticated %}
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Log Out</a>
                 {% else %}
@@ -33,5 +36,13 @@
             </div>
           </nav>
         {% block body %}{% endblock %}
+        <footer id="footer" class="footer bg_ligth text-center text-lg-start">
+          <!-- Copyright -->
+          <div class="text-center p-3" >
+             2022:
+            <a class="text-dark" href="https://mdbootstrap.com/">Made using edmam API</a>
+          </div>
+          <!-- Copyright -->
+        </footer>
     </body>
 </html>
