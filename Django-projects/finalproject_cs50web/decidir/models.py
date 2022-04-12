@@ -6,12 +6,12 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class User(AbstractUser):
     pass
 
-class comments(models.Model):
+class comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_comment")
     stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment_text = models.CharField(max_length=600)
 
-class receitas(models.Model):
+class receita(models.Model):
     calorias = models.FloatField(validators=[MinValueValidator(100)])
     carboidratos = models.FloatField()
     proteinas = models.FloatField()

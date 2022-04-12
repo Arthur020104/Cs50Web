@@ -1,0 +1,15 @@
+button, input[type="submit"]
+{
+    background-color: #4dba4d;
+    color: #fff;
+    outline: none!important;
+
+}
+body
+{
+    font-family: SulSans,Helvetica,sans-serif;
+}
+span
+{
+    outline: none!important;
+}

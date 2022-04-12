@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import User,receitas,comments
+from .models import User,receita,comment
 
 admin.site.register(User)
-admin.site.register(receitas)
-admin.site.register(comments)
+admin.site.register(receita)
+admin.site.register(comment)
