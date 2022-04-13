@@ -53,3 +53,78 @@ span
 {
     color: #4d4Dba!important;
 }
+.cards_btn
+{
+    background-color: #4d4Dba!important;
+    color: #fff!important;
+    outline: none!important;
+    transition: color .25s ease-in-out,background-color .25s ease-in-out,border-color .25s ease-in-out,box-shadow .25s ease-in-out!important;
+}
+.cards_btn:hover
+{
+    background-color: #fff!important;
+    color: #4d4Dba!important;
+    border-color: #4d4Dba!important;
+    outline: none!important;
+
+}
+.col-lg-3
+{
+    margin: auto;
+}
+.icon
+{
+    margin-bottom: 10px;
+    width: 30px;
+    animation-name: show;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+    outline: none!important;
+    background-color: #fff;
+    border: none;
+    color: #4d4Dba;
+    border-color: #4d4Dba;
+    border: 1px solid;
+    border-radius: 4px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.icon:hover
+{
+    background-color: #4d4Dba;
+    color: #fff;
+}
+.like
+{
+    animation-name: show;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+@keyframes show
+{
+    0%
+    {
+        opacity: 0;
+
+    }
+
+    100%
+    {
+        opacity: 1;
+    }
+
+}
+
+@keyframes hide
+{
+    0%
+    {
+        opacity: 1;
+    }
+    100%
+    {
+        opacity: 0;
+    }
+}

@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded',()=>{
+
+
+
+
+
   let recipebtn = document.querySelector("#recipe-make");
 
   if (recipebtn)
@@ -16,14 +21,17 @@ document.addEventListener('DOMContentLoaded',()=>{
         {
           if (resp.hints.length)
           {
-            console.log(resp.hints[0]);
-            nutricion.calorias += parseFloat(resp.hints[0].food.nutrients.ENERC_KCAL);
-            nutricion.carboidratos += parseFloat(resp.hints[0].food.nutrients.CHOCDF);
-            nutricion.proteinas +=  parseFloat(resp.hints[0].food.nutrients.PROCNT);
-            nutricion.gorduras +=  parseFloat(resp.hints[0].food.nutrients.FAT);
+            /*if("sweet potato" in foods)
+            {
+              sweet problem
+            }*/
+            nutricion.calorias += resp.hints[0].food.nutrients.ENERC_KCAL;
+            nutricion.carboidratos += resp.hints[0].food.nutrients.CHOCDF;
+            nutricion.proteinas +=  resp.hints[0].food.nutrients.PROCNT;
+            nutricion.gorduras +=  resp.hints[0].food.nutrients.FAT;
             if((parseInt(food) + 1) == foods.length)
             {
-              if(nutricion.calorias != 0 && nutricion.carboidratos != 0 && nutricion.proteinas != 0 && nutricion.gorduras != 0)
+              if(nutricion.calorias)
               {
                 /*
                 console.log(nutricion);
@@ -51,6 +59,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 {
                   // Print result
                   console.log(result);
+                  window.location.replace("/");
                 });
               }
             }
@@ -83,8 +92,37 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
 
   }
-
-
+  likes = document.querySelectorAll('.like');
+  if(likes)
+  {
+    likes.forEach(like =>{
+          like.style.animationPlayState = 'running';
+          like.addEventListener('click', () => 
+          {
+              like.style.animationName = 'hide';
+              like.style.animationPlayState = 'running';
+              fetch("/likes", {method: 'POST',
+              body: JSON.stringify
+              ({
+                  id: like.dataset.receita_id
+              })
+              })
+              .then(responsejson => responsejson.json())
+              .then(response=> {
+                  like.addEventListener('animationend', function animation() {
+                      like.removeEventListener('animationend', animation);
+                      let liked = document.getElementById('like'+response.receita_id);
+                      liked.classList.toggle("fa-solid");
+                      liked.classList.toggle("fa-regular");
+                      liked.style.animationName = 'show';
+                      liked.style.animationDuration = '1s';
+                      liked.style.animationPlayState = 'running';
+                      setTimeout(() => {location.reload(true)}, 500);
+                  });
+              });
+          });
+      })
+  }
 
 
 

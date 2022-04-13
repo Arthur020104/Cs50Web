@@ -15,7 +15,15 @@ from datetime import datetime
 
 
 def index(request):
-    return render(request,"decidir/index.html")
+    receitas = receita.objects.all().order_by("timestamp").reverse()
+    for tms in receitas:
+        tms.timestamp = datetime.fromtimestamp(float(tms.timestamp))
+    p = Paginator(receitas,10)
+    page = request.GET.get('page')        
+    receitass = p.get_page(page)
+    return render(request,"decidir/index.html",{
+        "receitas": receitass
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -88,9 +96,15 @@ def create_recipe(request):
 
         tranlator = Translator()
         translations = tranlator.translate(foods, dest='pt')
-        comidas = []
-        for comida in translations:
-            comidas.append(comida.text)
+        comidas = ''
+        for i in range(0,(len(translations))):
+            if i == (len(translations)-1):
+                comidas += ' e '
+            comidas += (translations[i].text)
+            if i == (len(translations)-1):
+                comidas += '.'
+            elif i != (len(translations)-2):
+                comidas += ', '
         recipe = receita.objects.create(name = name, img = img, ingredientes = comidas, calorias = calorias, carboidratos = carboidratos, proteinas = proteinas, gorduras = gorduras, timestamp = datetime.timestamp(datetime.now()))
         recipe.save()
         return JsonResponse(
@@ -112,4 +126,21 @@ def tradutor(request):
 
         return JsonResponse({"traducao":translations.text}, status=200)
 
+    return HttpResponse(401)
+
+@csrf_exempt
+def likes(request):
+    if request.user.id is None:
+        return HttpResponse(401)
+    data = json.loads(request.body)
+    user = request.user
+    recipe_id = int(data.get("id",""))
+    recipe = receita.objects.get(pk=recipe_id)
+    if request.method == "POST":
+        if user in recipe.likes.all():
+            recipe.likes.remove(user)
+            return JsonResponse({'receita_id': recipe_id}, status=202)
+        else:
+            recipe.likes.add(user)
+            return JsonResponse({'receita_id': recipe_id}, status=202)
     return HttpResponse(401)
