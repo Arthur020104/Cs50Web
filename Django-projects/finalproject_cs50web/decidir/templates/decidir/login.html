@@ -7,11 +7,11 @@
     {% if message %}
         <div>{{ message }}</div>
     {% endif %}
-    <div class="container">
+    <div class="container mg-auto">
         <form action="{% url 'login'%}" method="post">
             {%csrf_token%}
             <div class="form-group">
-                <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+                <input class="form-control" autocomplete="off" autofocus type="text" name="username" placeholder="Username">
             </div>
             <div class="form-group">
                 <input class="form-control" type="password" name="password" placeholder="Senha">

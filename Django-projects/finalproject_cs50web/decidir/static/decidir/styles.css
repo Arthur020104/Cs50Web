@@ -10,7 +10,6 @@ button, input[type="submit"]
     color: #fff;
     outline: none!important;
     transition: color .25s ease-in-out,background-color .25s ease-in-out,border-color .25s ease-in-out,box-shadow .25s ease-in-out!important;
-
 }
 button, input[type="submit"]:hover
 {
@@ -47,7 +46,8 @@ span
 .title
 {
     color: #3e3e3e!important;
-    font-weight: 400!important;
+    font-family: Helvetica, sans-serif;
+    font-weight: 700!important;
 }
 .link
 {
@@ -127,4 +127,77 @@ span
     {
         opacity: 0;
     }
+}
+#modopreparo_receita
+{
+    width: 80%;
+    margin: auto;
+}
+#btn_traduzir
+{
+    margin-bottom: 15px;
+}
+.recipe-info
+{
+    margin-top: 30px!important;
+    flex-direction: column;
+    background-color: #f7f7f7!important;
+    padding: 30px;
+    margin: auto;
+    border-radius: 3px;
+}
+.ingrdients-info
+{
+    margin-top: 20px!important;
+    flex-direction: column;
+    background-color: #f7f7f7!important;
+    padding: 15px;
+    margin: auto;
+    border-radius: 3px;
+}
+.img-full
+{
+
+    width: auto;
+    margin: auto;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.coluna-full
+{
+    background-color: #fff;
+    padding: 10px!important;
+    width: auto!important;
+    border-radius: 8px;
+}
+.row-full
+{
+    width: 80%;
+    margin-left: 17%!important;
+}
+.color
+{
+    color:#4d4Dba!important;
+}
+.navbar-brand
+{
+    font-size: 23px!important;
+    font-family:sans-serif!important;
+}
+.text
+{
+    width: 60%!important;
+    margin: auto!important;
+}
+.fa-cart-shopping
+{
+    font-size: 20px!important;
+}
+.fa-kitchen-set
+{
+    margin-left: 5px!important;
+}
+.mg-auto
+{
+    margin: auto!important;
 }

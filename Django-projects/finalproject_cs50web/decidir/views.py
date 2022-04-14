@@ -1,9 +1,7 @@
-from unicodedata import name
 from django.shortcuts import render
-from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
@@ -12,13 +10,13 @@ from .models import User, receita
 import json
 from googletrans import Translator
 from datetime import datetime
-
+from django.core.serializers import serialize
 
 def index(request):
     receitas = receita.objects.all().order_by("timestamp").reverse()
     for tms in receitas:
         tms.timestamp = datetime.fromtimestamp(float(tms.timestamp))
-    p = Paginator(receitas,10)
+    p = Paginator(receitas,9)
     page = request.GET.get('page')        
     receitass = p.get_page(page)
     return render(request,"decidir/index.html",{
@@ -68,15 +66,23 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     
     return render(request, "decidir/register.html")
-
+@login_required
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-def comments(request):
+def info(request, content, id):
+    if content == "receita":
+        recipe = receita.objects.get(pk=id)
+        if not id:
+            return JsonResponse(
+                {
+                "error": "Id da receita deve ser fornecido."
+                }, status=400)
+        return JsonResponse(recipe.serialize(),status=200)
     pass
 #json post e get
-
+@login_required
 @csrf_exempt
 def create_recipe(request):
     if request.method == 'POST':
@@ -88,6 +94,7 @@ def create_recipe(request):
         foods = data.get("foods","")
         img = data.get("img","")
         name = data.get("name","")
+        modoPreparo = data.get("modopreparo","")
         if not calorias or not gorduras or not proteinas or not carboidratos or not foods or not img or not name:
             return JsonResponse(
             {
@@ -105,7 +112,7 @@ def create_recipe(request):
                 comidas += '.'
             elif i != (len(translations)-2):
                 comidas += ', '
-        recipe = receita.objects.create(name = name, img = img, ingredientes = comidas, calorias = calorias, carboidratos = carboidratos, proteinas = proteinas, gorduras = gorduras, timestamp = datetime.timestamp(datetime.now()))
+        recipe = receita.objects.create(name = name, img = img, ingredientes = comidas, calorias = calorias, carboidratos = carboidratos, proteinas = proteinas, gorduras = gorduras, timestamp = datetime.timestamp(datetime.now()), sender = request.user,modoPreparo = modoPreparo)
         recipe.save()
         return JsonResponse(
             {
@@ -116,6 +123,8 @@ def create_recipe(request):
             return render(request, "decidir/recipe.html")
         else:
             return HttpResponseRedirect(reverse("index"))
+
+@login_required
 @csrf_exempt
 def tradutor(request):
     if request.method == 'POST':
@@ -127,7 +136,7 @@ def tradutor(request):
         return JsonResponse({"traducao":translations.text}, status=200)
 
     return HttpResponse(401)
-
+@login_required
 @csrf_exempt
 def likes(request):
     if request.user.id is None:

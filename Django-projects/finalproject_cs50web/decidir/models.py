@@ -16,4 +16,22 @@ class receita(models.Model):
     gorduras = models.FloatField()
     timestamp = models.CharField(max_length=30)
     likes = models.ManyToManyField(User,blank=True,related_name="liked")
+    sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name="sender")
+    modoPreparo = models.CharField(max_length=3000)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "img": self.img,
+            "ingredientes": self.ingredientes,
+            "calorias": self.calorias,
+            "carboidratos": self.carboidratos,
+            "proteinas": self.proteinas,
+            "gorduras": self.gorduras,
+            "timestamp": self.timestamp,
+            "likes": self.likes.all().count(),
+            "sender": self.sender.username,
+            "modoPreparo": self.modoPreparo
+        }
 
