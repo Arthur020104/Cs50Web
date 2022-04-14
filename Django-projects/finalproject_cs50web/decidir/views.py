@@ -13,10 +13,10 @@ from datetime import datetime
 from django.core.serializers import serialize
 
 def index(request):
-    receitas = receita.objects.all().order_by("timestamp").reverse()
+    receitas = receita.objects.all().order_by('?')
     for tms in receitas:
         tms.timestamp = datetime.fromtimestamp(float(tms.timestamp))
-    p = Paginator(receitas,9)
+    p = Paginator(receitas,6)
     page = request.GET.get('page')        
     receitass = p.get_page(page)
     return render(request,"decidir/index.html",{
@@ -119,7 +119,7 @@ def create_recipe(request):
             "mensagem": "A receita foi adicionada com sucesso."
             }, status=200)
     else:
-        if request.user.username == "Admin" and request.user.id == 1:
+        if request.user.id:
             return render(request, "decidir/recipe.html")
         else:
             return HttpResponseRedirect(reverse("index"))

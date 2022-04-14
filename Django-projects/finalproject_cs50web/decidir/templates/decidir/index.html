@@ -10,7 +10,7 @@
         <div class="col-lg-3">
             {% define forloop.counter|slugify as counter %}
             <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="{{receita.img}}" alt="{{receita.name}}">
+                <img class="card-img" src="{{receita.img}}" alt="{{receita.name}}">
                 <div class="card-body">
                 <h5 class="card-title">{{receita.name}}</h5>
                 <p class="card-text">{{receita.ingredientes}}</p>
@@ -27,14 +27,33 @@
             </div>
         </div>
         {% if counter == 0 %}
-    </div>
-        <div class="row">
+            </div>
+            <div class="row">
         {% endif %}
     {% endfor %}
             </div>
+            </div>
         </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {% if receitas.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo First</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="?page={{receitas.previous_page_number}}">Previous</a></li>
+                {% endif %}
+                <li class="page-item disabled"><a class="page-link" href="#">Page {{receitas.number}} of {{receitas.paginator.num_pages}}</a></li>
+                {% if receitas.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{receitas.next_page_number}}">Next</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{receitas.paginator.num_pages}}">Last &raquo</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
 </div>
 </div>
+
 {% endif %}
 <div id="fullpage"></div>
 {% endblock %}

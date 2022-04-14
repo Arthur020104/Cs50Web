@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded',()=>{
-  document.querySelector('#fullpage').style.display = 'none';
+  //document.querySelector('#fullpage').style.display = 'none';
   let recipebtn = document.querySelector("#recipe-make");
 
   if (recipebtn)
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         {
           if (resp.hints.length)
           {
-
             nutricion.calorias += resp.hints[0].food.nutrients.ENERC_KCAL;
             nutricion.carboidratos += resp.hints[0].food.nutrients.CHOCDF;
             nutricion.proteinas +=  resp.hints[0].food.nutrients.PROCNT;
