@@ -5,49 +5,52 @@ document.addEventListener('DOMContentLoaded',()=>{
   if (recipebtn)
   {
     let content = document.querySelector(".textarea");
-    recipebtn.addEventListener('click',()=>
+    recipebtn.addEventListener('click',function click()
     {
       let foods = content.value.split('\n');
       let nutricion = {"calorias": 0, "carboidratos":0, "proteinas": 0, "gorduras":0};
+      let counter = 0;
       for(let food in foods)
       {
-        fetch(`https://api.edamam.com/api/food-database/parser?app_id=6ae4d842&app_key=732ed701545b5a01933ff8cbc901b7ea&ingr=${foods[food]}`)
+        fetch(`https://api.edamam.com/api/nutrition-data?app_id=0e0efa68&app_key=%206106f458ccc594574d31692d70661790%09&nutrition-type=cooking&ingr=${foods[food]}`)
         .then(resp => resp.json())
         .then(resp => 
         {
-          if (resp.hints.length)
+          if(resp)
           {
-            nutricion.calorias += resp.hints[0].food.nutrients.ENERC_KCAL;
-            nutricion.carboidratos += resp.hints[0].food.nutrients.CHOCDF;
-            nutricion.proteinas +=  resp.hints[0].food.nutrients.PROCNT;
-            nutricion.gorduras +=  resp.hints[0].food.nutrients.FAT;
-            if((parseInt(food) + 1) == foods.length)
+            //console.log("calorias:"+resp.calories);
+            //console.log("carb"+resp['totalNutrients'].CHOCDF.quantity);
+            //console.log("proteina"+resp['totalNutrients'].PROCNT.quantity);
+            //console.log("gorduras"+resp['totalNutrients'].FAT.quantity);
+            nutricion.calorias += resp.calories;
+            nutricion.carboidratos += resp['totalNutrients'].CHOCDF.quantity;
+            nutricion.proteinas += resp['totalNutrients'].PROCNT.quantity;
+            nutricion.gorduras +=  resp['totalNutrients'].FAT.quantity;
+            counter++;
+            if(foods.length == counter)
             {
-              if(nutricion.calorias)
+              fetch('/receita', 
               {
-                fetch('/receita', 
+                method: 'POST',
+                body: JSON.stringify(
                 {
-                  method: 'POST',
-                  body: JSON.stringify(
-                  {
-                    name : document.querySelector("#nome_receita").value,
-                    img : document.querySelector("#img_receita").value,
-                    modopreparo : document.querySelector("#modopreparo_receita").value,
-                    calorias: nutricion.calorias,
-                    carboidratos: nutricion.carboidratos,
-                    proteinas: nutricion.proteinas,
-                    gorduras: nutricion.gorduras,
-                    foods: foods
-                  })
+                  name : document.querySelector("#nome_receita").value,
+                  img : document.querySelector("#img_receita").value,
+                  modopreparo : document.querySelector("#modopreparo_receita").value,
+                  calorias: nutricion.calorias,
+                  carboidratos: nutricion.carboidratos,
+                  proteinas: nutricion.proteinas,
+                  gorduras: nutricion.gorduras,
+                  foods: foods
                 })
-                .then(response => response.json())
-                .then(result => 
-                {
-                  // Print result
-                  console.log(result);
-                  window.location.replace("/");
-                });
-              }
+              })
+              .then(response => response.json())
+              .then(result => 
+              {
+                // Print result
+                console.log(result);
+                window.location.replace("/");
+              });
             }
           }
         });
@@ -146,7 +149,7 @@ function fullpage(receita)
   modopreparo.classList.add("container");
   ingredientes.classList.add("container");
   container_page.classList.add("container");
-  container_page.innerHTML= "<div class='recipe-info text-center'><h3 class='title text-center color'>"+receita.name+"</h3><img class='img-full' src="+receita.img+"><div class='row row-full'><div class='col-sm-2 coluna-full'><p class='text-center color'>Calorias</p><p class='text-center'>"+Number((receita.calorias).toFixed(1))+"</p></div><div class='col-sm-2 coluna-full'><p class='text-center color'>Carboidratos</p><p class='text-center'>"+Number((receita.carboidratos).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Proteinas</p><p class='text-center'>"+Number((receita.proteinas).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Gorduras</p><p class='text-center'>"+Number((receita.gorduras).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'><i  class='fa-solid fa-heart like color'></i></p><p class='text-center'>"+receita.likes+"</p></div></div></div>";
+  container_page.innerHTML= "<div class='recipe-info text-center'><h3 class='title text-center color'>"+receita.name+"</h3><img class='img-full' src="+receita.img+"><div class='row row-full'><div class='col-sm-2 coluna-full'><p class='text-center color'>Calorias</p><p class='text-center'>"+Number((receita.calorias).toFixed(1))+"</p></div><div class='col-sm-2 coluna-full'><p class='text-center color'>Carboidratos</p><p class='text-center'>"+Number((receita.carboidratos).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Proteínas</p><p class='text-center'>"+Number((receita.proteinas).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Gorduras</p><p class='text-center'>"+Number((receita.gorduras).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'><i  class='fa-solid fa-heart like color'></i></p><p class='text-center'>"+receita.likes+"</p></div></div></div>";
   ingredientes.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Ingredientes <i class='fa-solid fa-cart-shopping color'></i></h3><p class='text-center text'>"+receita.ingredientes+"</p></div>";
   modopreparo.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Modo de preparo<i class='fa-solid fa-kitchen-set'></i></h3><p class='text-center text'>"+receita.modoPreparo+"</p></div>";
 
