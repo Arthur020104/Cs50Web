@@ -1,3 +1,57 @@
+function fullpage(receita)
+{
+  document.querySelector('#receitas').style.display = 'none';
+  let fullpage = document.querySelector('#fullpage');
+  fullpage.style.display = 'block';
+  let container_page = document.createElement('div');
+  let ingredientes = document.createElement('section');
+  let modopreparo = document.createElement('section');
+  fullpage.appendChild(container_page);
+  fullpage.appendChild(ingredientes);
+  fullpage.appendChild(modopreparo);
+
+  modopreparo.classList.add("container");
+  ingredientes.classList.add("container");
+  container_page.classList.add("container");
+  container_page.innerHTML= "<div class='recipe-info text-center'><h3 class='title text-center color'>"+receita.name+"</h3><img class='img-full' src="+receita.img+"><div class='row row-full'><div class='col-sm-2 coluna-full'><p class='text-center color'>Calorias</p><p class='text-center'>"+Number((receita.calorias).toFixed(1))+"</p></div><div class='col-sm-2 coluna-full'><p class='text-center color'>Carboidratos</p><p class='text-center'>"+Number((receita.carboidratos).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Proteínas</p><p class='text-center'>"+Number((receita.proteinas).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Gorduras</p><p class='text-center'>"+Number((receita.gorduras).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'><i  class='fa-solid fa-heart like color'></i></p><p class='text-center'>"+receita.likes+"</p></div></div></div>";
+  ingredientes.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Ingredientes <i class='fa-solid fa-cart-shopping color'></i></h3><p class='text-center text'>"+receita.ingredientes+"</p></div>";
+  modopreparo.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Modo de preparo<i class='fa-solid fa-kitchen-set'></i></h3><p class='text-center text'>"+receita.modoPreparo+"</p></div>";
+
+}
+function alert(message)
+{
+  let alerts = document.createElement("div");
+  alerts.style.transition = '1.2s ease all';
+  if("error" in message)
+  {
+    alerts.classList.add('alert-danger', "alert");
+    alerts.innerHTML = message['error'];
+  }
+  else if("warning" in message)
+  {
+    alerts.classList.add('alert-warning', "alert");
+    alerts.innerHTML = message['warning'];
+  }
+  else
+  {
+    alerts.classList.add('alert-success', "alert");
+    alerts.innerHTML = message['message'];
+  }
+
+
+  document.querySelector('#alert').appendChild(alerts);
+
+  alerts.style.animationPlayState = 'running';
+  setTimeout(() => 
+  {
+    alerts.style.animationName = "hidealert";
+    alerts.style.animationPlayState = 'running';
+    alerts.addEventListener("animationend",()=>
+    {
+      alerts.remove();
+    })
+  }, 5000);
+}
 document.addEventListener('DOMContentLoaded',()=>{
   //document.querySelector('#fullpage').style.display = 'none';
   let recipebtn = document.querySelector("#recipe-make");
@@ -18,43 +72,84 @@ document.addEventListener('DOMContentLoaded',()=>{
         {
           if(resp)
           {
-            //console.log("calorias:"+resp.calories);
-            //console.log("carb"+resp['totalNutrients'].CHOCDF.quantity);
-            //console.log("proteina"+resp['totalNutrients'].PROCNT.quantity);
-            //console.log("gorduras"+resp['totalNutrients'].FAT.quantity);
-            nutricion.calorias += resp.calories;
-            nutricion.carboidratos += resp['totalNutrients'].CHOCDF.quantity;
-            nutricion.proteinas += resp['totalNutrients'].PROCNT.quantity;
-            nutricion.gorduras +=  resp['totalNutrients'].FAT.quantity;
-            counter++;
-            if(foods.length == counter)
+            try
             {
-              fetch('/receita', 
+            
+              //console.log("calorias:"+resp.calories);
+              //console.log("carb"+resp['totalNutrients'].CHOCDF.quantity);
+              //console.log("proteina"+resp['totalNutrients'].PROCNT.quantity);
+              //console.log("gorduras"+resp['totalNutrients'].FAT.quantity);
+              nutricion.calorias += resp.calories;
+              nutricion.carboidratos += resp['totalNutrients'].CHOCDF.quantity;
+              nutricion.proteinas += resp['totalNutrients'].PROCNT.quantity;
+              nutricion.gorduras +=  resp['totalNutrients'].FAT.quantity;
+              counter++;
+              if(foods.length == counter)
               {
-                method: 'POST',
-                body: JSON.stringify(
+                fetch('/receita', 
                 {
-                  name : document.querySelector("#nome_receita").value,
-                  img : document.querySelector("#img_receita").value,
-                  modopreparo : document.querySelector("#modopreparo_receita").value,
-                  calorias: nutricion.calorias,
-                  carboidratos: nutricion.carboidratos,
-                  proteinas: nutricion.proteinas,
-                  gorduras: nutricion.gorduras,
-                  foods: foods
+                  method: 'POST',
+                  body: JSON.stringify(
+                  {
+                    name : document.querySelector("#nome_receita").value,
+                    img : document.querySelector("#img_receita").value,
+                    modopreparo : document.querySelector("#modopreparo_receita").value,
+                    calorias: nutricion.calorias,
+                    carboidratos: nutricion.carboidratos,
+                    proteinas: nutricion.proteinas,
+                    gorduras: nutricion.gorduras,
+                    foods: foods
+                  })
                 })
-              })
-              .then(response => response.json())
-              .then(result => 
+                .then(response => response.json())
+                .then(result => 
+                {
+                  // Print result
+                  console.log(result);
+                  if("error" in result)
+                  {
+                    alert(result);
+                  }
+                  else
+                  {
+                    window.location.replace("/");
+                  }
+                });
+              }
+            }
+            catch(e)
+            {
+              counter--;
+              console.log(e);
+              if(e instanceof TypeError)
               {
-                // Print result
-                console.log(result);
-                window.location.replace("/");
-              });
+                let comida;
+                fetch('/tradutor', 
+                {
+                  method : 'POST',
+                  body: JSON.stringify(
+                  {
+                    traduzir: foods[food],
+                    lang: "pt"
+                  })
+                })
+                .then(response => response.json())
+                .then(result => 
+                {
+                  console.log(result.traducao);
+                  comida = result.traducao;
+                });
+                setTimeout(() => {alert({"error":"TypeError:Por favor especificar melhor a quantidade do alimento "+comida+"."});}, 300);
+              }
+              else
+              {
+                alert({"error":e});
+              }
             }
           }
         });
       }
+
     });
   }
   btn_tradutor = document.getElementById('btn_traduzir');
@@ -68,7 +163,8 @@ document.addEventListener('DOMContentLoaded',()=>{
         method : 'POST',
         body: JSON.stringify(
         {
-          traduzir: content.value
+          traduzir: content.value,
+          lang: "en"
         })
       })
       .then(response => response.json())
@@ -123,8 +219,12 @@ document.addEventListener('DOMContentLoaded',()=>{
           fetch('/info/receita/'+id)
           .then(response => response.json())
           .then(receita => {
-            // Print emails
+            // Print receita
             console.log(receita);
+            if("error" in receita)
+            {
+              alert(receita);
+            }
             fullpage(receita)
           });
         });
@@ -133,24 +233,3 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 });
-
-function fullpage(receita)
-{
-  document.querySelector('#receitas').style.display = 'none';
-  let fullpage = document.querySelector('#fullpage');
-  fullpage.style.display = 'block';
-  let container_page = document.createElement('div');
-  let ingredientes = document.createElement('section');
-  let modopreparo = document.createElement('section');
-  fullpage.appendChild(container_page);
-  fullpage.appendChild(ingredientes);
-  fullpage.appendChild(modopreparo);
-
-  modopreparo.classList.add("container");
-  ingredientes.classList.add("container");
-  container_page.classList.add("container");
-  container_page.innerHTML= "<div class='recipe-info text-center'><h3 class='title text-center color'>"+receita.name+"</h3><img class='img-full' src="+receita.img+"><div class='row row-full'><div class='col-sm-2 coluna-full'><p class='text-center color'>Calorias</p><p class='text-center'>"+Number((receita.calorias).toFixed(1))+"</p></div><div class='col-sm-2 coluna-full'><p class='text-center color'>Carboidratos</p><p class='text-center'>"+Number((receita.carboidratos).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Proteínas</p><p class='text-center'>"+Number((receita.proteinas).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Gorduras</p><p class='text-center'>"+Number((receita.gorduras).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'><i  class='fa-solid fa-heart like color'></i></p><p class='text-center'>"+receita.likes+"</p></div></div></div>";
-  ingredientes.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Ingredientes <i class='fa-solid fa-cart-shopping color'></i></h3><p class='text-center text'>"+receita.ingredientes+"</p></div>";
-  modopreparo.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Modo de preparo<i class='fa-solid fa-kitchen-set'></i></h3><p class='text-center text'>"+receita.modoPreparo+"</p></div>";
-
-}

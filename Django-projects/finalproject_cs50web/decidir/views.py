@@ -10,10 +10,19 @@ from .models import User, receita
 import json
 from googletrans import Translator
 from datetime import datetime
-from django.core.serializers import serialize
 
 def index(request):
-    receitas = receita.objects.all().order_by('?')
+    minute = int(datetime.now().strftime("%M"))
+    if minute % 5 == 0:
+        receitas = receita.objects.all().order_by('name')
+    elif minute % 3 == 0:
+        receitas = receita.objects.all().order_by('timestamp').reverse()
+    elif minute % 7 == 0:
+        receitas = receita.objects.all().order_by('name').reverse()
+    elif minute % 11 == 0:
+        receitas = receita.objects.all().order_by('ingredientes')
+    else:
+        receitas = receita.objects.all().order_by('likes').reverse()
     for tms in receitas:
         tms.timestamp = datetime.fromtimestamp(float(tms.timestamp))
     p = Paginator(receitas,6)
@@ -116,7 +125,7 @@ def create_recipe(request):
         recipe.save()
         return JsonResponse(
             {
-            "mensagem": "A receita foi adicionada com sucesso."
+            "message": "A receita foi adicionada com sucesso."
             }, status=200)
     else:
         if request.user.id:
@@ -131,7 +140,8 @@ def tradutor(request):
         tranlator = Translator()
         data = json.loads(request.body)
         translate = data.get("traduzir","")
-        translations = tranlator.translate(translate, dest='en')
+        lang = data.get("lang","")
+        translations = tranlator.translate(translate, dest=lang)
 
         return JsonResponse({"traducao":translations.text}, status=200)
 
