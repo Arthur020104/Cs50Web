@@ -13,7 +13,39 @@ function fullpage(receita)
   modopreparo.classList.add("container");
   ingredientes.classList.add("container");
   container_page.classList.add("container");
-  container_page.innerHTML= "<div class='recipe-info text-center'><h3 class='title text-center color'>"+receita.name+"</h3><img class='img-full' src="+receita.img+"><div class='row row-full'><div class='col-sm-2 coluna-full'><p class='text-center color'>Calorias</p><p class='text-center'>"+Number((receita.calorias).toFixed(1))+"</p></div><div class='col-sm-2 coluna-full'><p class='text-center color'>Carboidratos</p><p class='text-center'>"+Number((receita.carboidratos).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Proteínas</p><p class='text-center'>"+Number((receita.proteinas).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Gorduras</p><p class='text-center'>"+Number((receita.gorduras).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'><i  class='fa-solid fa-heart like color'></i></p><p class='text-center'>"+receita.likes+"</p></div></div></div>";
+
+  let carousel = '<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">';
+  for(let i = 0; i < receita.img.length; i++)
+  {
+    if(i == 0)
+    {
+      carousel += '<li data-target="#carouselExampleIndicators" data-slide-to="'+i+'" class="active"></li>';
+    }
+    else
+    {
+      carousel += '<li data-target="#carouselExampleIndicators" data-slide-to="'+i+'"></li>';
+    }
+    if(i == (receita.img.length-1))
+    {
+      carousel += '</ol>';
+      carousel += '<div class="carousel-inner">';
+      for(let j = 0; j < receita.img.length; j++)
+      {
+        if(j==0)
+        {
+          carousel += '<div class="carousel-item active"><img src="'+receita.img[j]+'" class="d-block w-100" alt="'+receita.name+'"></div>';
+        }
+        else
+        {
+          carousel += '<div class="carousel-item"><img src="'+receita.img[j]+'" class="d-block w-100" alt="'+receita.name+'"></div>';
+        }
+      }
+      carousel += '</div>';
+      carousel += '<button class="carousel-control-prev" type="button" data-target="#carouselExampleIndicators" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previous</span></button><button class="carousel-control-next" type="button" data-target="#carouselExampleIndicators" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="sr-only">Next</span></button></div>';
+    }
+  }
+
+  container_page.innerHTML= "<div class='recipe-info text-center'><h3 class='title text-center color'>"+receita.name+"</h3>"+carousel+"<div class='row row-full'><div class='col-sm-2 coluna-full'><p class='text-center color'>Calorias</p><p class='text-center'>"+Number((receita.calorias).toFixed(1))+"</p></div><div class='col-sm-2 coluna-full'><p class='text-center color'>Carboidratos</p><p class='text-center'>"+Number((receita.carboidratos).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Proteínas</p><p class='text-center'>"+Number((receita.proteinas).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'>Gorduras</p><p class='text-center'>"+Number((receita.gorduras).toFixed(1))+"g</p></div><div class='coluna-full col-sm-2'><p class='text-center color'><i  class='fa-solid fa-heart like color'></i></p><p class='text-center'>"+receita.likes+"</p></div></div></div>";
   ingredientes.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Ingredientes <i class='fa-solid fa-cart-shopping color'></i></h3><p class='text-center text'>"+receita.ingredientes+"</p></div>";
   modopreparo.innerHTML = "<div class='ingrdients-info text-center'><h3 class='title text-center color'>Modo de preparo<i class='fa-solid fa-kitchen-set'></i></h3><p class='text-center text'>"+receita.modoPreparo+"</p></div>";
 
@@ -58,7 +90,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   if (recipebtn)
   {
-    let content = document.querySelector(".textarea");
+    let content = document.querySelector("#ingred");
     recipebtn.addEventListener('click',function click()
     {
       let foods = content.value.split('\n');
@@ -86,13 +118,14 @@ document.addEventListener('DOMContentLoaded',()=>{
               counter++;
               if(foods.length == counter)
               {
+                imgs = document.querySelector("#img_receita").value.split('\n');
                 fetch('/receita', 
                 {
                   method: 'POST',
                   body: JSON.stringify(
                   {
                     name : document.querySelector("#nome_receita").value,
-                    img : document.querySelector("#img_receita").value,
+                    imgs : imgs,
                     modopreparo : document.querySelector("#modopreparo_receita").value,
                     calorias: nutricion.calorias,
                     carboidratos: nutricion.carboidratos,
@@ -157,7 +190,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   {
     btn_tradutor.addEventListener('click', ()=>
     {
-      let content = document.querySelector(".textarea");
+      let content = document.querySelector("#ingred");
       fetch('/tradutor', 
       {
         method : 'POST',
@@ -220,7 +253,7 @@ document.addEventListener('DOMContentLoaded',()=>{
           .then(response => response.json())
           .then(receita => {
             // Print receita
-            console.log(receita);
+            // console.log(receita);
             if("error" in receita)
             {
               alert(receita);

@@ -5,10 +5,12 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 class User(AbstractUser):
     pass
+class Img(models.Model):
+    img = models.CharField(max_length=500)
 
 class receita(models.Model):
     name = models.CharField(max_length=50)
-    img = models.CharField(max_length=500)
+    img = models.ManyToManyField(Img,blank=True,related_name="imgs")
     ingredientes = models.CharField(max_length=800)
     calorias = models.FloatField(validators=[MinValueValidator(100)])
     carboidratos = models.FloatField()

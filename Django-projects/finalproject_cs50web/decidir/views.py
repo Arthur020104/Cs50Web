@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .models import User, receita
+from .models import User, receita, Img
 import json
 from googletrans import Translator
 from datetime import datetime
@@ -88,9 +88,14 @@ def info(request, content, id):
                 {
                 "error": "Id da receita deve ser fornecido."
                 }, status=400)
-        return JsonResponse(recipe.serialize(),status=200)
+        recepuni = recipe.serialize()
+        imgs = []
+        print(recepuni["img"].all())
+        for img in recepuni["img"].all():
+            imgs.append(img.img)
+        recepuni["img"] = imgs
+        return JsonResponse(recepuni,status=200)
     pass
-#json post e get
 @login_required
 @csrf_exempt
 def create_recipe(request):
@@ -101,10 +106,10 @@ def create_recipe(request):
         proteinas = float(data.get("proteinas", ""))
         carboidratos = float(data.get("carboidratos", ""))
         foods = data.get("foods","")
-        img = data.get("img","")
+        imgs = data.get("imgs","")
         name = data.get("name","")
         modoPreparo = data.get("modopreparo","")
-        if not calorias or not gorduras or not proteinas or not carboidratos or not foods or not img or not name:
+        if not calorias or not gorduras or not proteinas or not carboidratos or not foods or not imgs or not name:
             return JsonResponse(
             {
             "error": "Todos campos precisam ser preenchidos."
@@ -121,8 +126,12 @@ def create_recipe(request):
                 comidas += '.'
             elif i != (len(translations)-2):
                 comidas += ', '
-        recipe = receita.objects.create(name = name, img = img, ingredientes = comidas, calorias = calorias, carboidratos = carboidratos, proteinas = proteinas, gorduras = gorduras, timestamp = datetime.timestamp(datetime.now()), sender = request.user,modoPreparo = modoPreparo)
+        recipe = receita.objects.create(name = name, ingredientes = comidas, calorias = calorias, carboidratos = carboidratos, proteinas = proteinas, gorduras = gorduras, timestamp = datetime.timestamp(datetime.now()), sender = request.user,modoPreparo = modoPreparo)
         recipe.save()
+        for img in imgs:
+            image = Img.objects.create(img = img)
+            image.save()
+            recipe.img.add(image)
         return JsonResponse(
             {
             "message": "A receita foi adicionada com sucesso."
